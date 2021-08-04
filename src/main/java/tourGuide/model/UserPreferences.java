@@ -5,7 +5,7 @@ import org.javamoney.moneta.Money;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
-
+//ms-user
 public class UserPreferences {
 	
 	private int attractionProximity = Integer.MAX_VALUE;
