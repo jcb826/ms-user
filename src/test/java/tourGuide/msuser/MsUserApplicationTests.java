@@ -4,12 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.model.User;
+import tourGuide.service.TourGuideService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SpringBootTest
 class MsUserApplicationTests {
@@ -21,7 +25,7 @@ class MsUserApplicationTests {
 	public void getUserLocation() {
 		Locale.setDefault(new Locale("en", "US"));
 		GpsUtil gpsUtil = new GpsUtil();
-		/*
+
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
@@ -31,7 +35,7 @@ class MsUserApplicationTests {
 		tourGuideService.tracker.stopTracking();
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
 
-		 */
+
 	}
 	@Test
 	public void addUser() {

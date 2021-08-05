@@ -1,14 +1,16 @@
 package tourGuide.service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tourGuide.consumer.GpsGateway;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.model.User;
 import tourGuide.model.UserReward;
+import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
@@ -26,16 +28,18 @@ import java.util.stream.IntStream;
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
-	private final RewardsService rewardsService;
+	//private final GpsUtil gpsUtil;
+	//private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
-	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
-		this.gpsUtil = gpsUtil;
-		this.rewardsService = rewardsService;
-		
+	private final Map<String, User> internalUserMap = new HashMap<>();
+	private final GpsGateway gpsGateway;
+
+	public TourGuideService(/*GpsUtil gpsUtil, RewardsService rewardsService*/GpsGateway gpsGateway) {
+		this.gpsGateway = gpsGateway;
+
+
 		if(testMode) {
 			logger.info("TestMode enabled");
 			logger.debug("Initializing users");
@@ -45,6 +49,27 @@ public class TourGuideService {
 		tracker = new Tracker(this);
 		addShutDownHook();
 	}
+
+	public VisitedLocation getUserLocation(User user) {
+		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
+				user.getLastVisitedLocation() :
+				trackUserLocation(user);
+		return visitedLocation;
+	}
+	public User getUser(String userName) {
+		return internalUserMap.get(userName);
+	}
+	public VisitedLocation trackUserLocation(User user) {
+		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
+		VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
+		user.addToVisitedLocations(visitedLocation);
+		rewardsService.calculateRewards(user);
+		return visitedLocation;
+	}
+
+
+
+
 	// reward
 
 	public List<UserReward> getUserRewards(String username) {
@@ -53,17 +78,8 @@ public class TourGuideService {
 	}
 
 
-	// user
-	public VisitedLocation getUserLocation(User user) {
-		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-			user.getLastVisitedLocation() :
-			trackUserLocation(user);
-		return visitedLocation;
-	}
-	//user
-	public User getUser(String userName) {
-		return internalUserMap.get(userName);
-	}
+
+
 	// user
 	public List<User> getAllUsers() {
 		return internalUserMap.values().stream().collect(Collectors.toList());
@@ -82,14 +98,7 @@ public class TourGuideService {
 		user.setTripDeals(providers);
 		return providers;
 	}
-	// user
-	public VisitedLocation trackUserLocation(User user) {
-		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		user.addToVisitedLocations(visitedLocation);
-		rewardsService.calculateRewards(user);
-		return visitedLocation;
-	}
+
 // gps
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();

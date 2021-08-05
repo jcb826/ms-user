@@ -1,5 +1,6 @@
 package tourGuide.consumer;
 
+import gpsUtil.location.VisitedLocation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
