@@ -1,18 +1,16 @@
 package tourGuide.service;
 
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import tourGuide.consumer.GpsGateway;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.model.Location;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
+import tourGuide.model.VisitedLocation;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -56,6 +54,7 @@ public class TourGuideService {
 				trackUserLocation(user);
 		return visitedLocation;
 	}
+
 	public User getUser(String userName) {
 		return internalUserMap.get(userName);
 	}
@@ -63,7 +62,7 @@ public class TourGuideService {
 		NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 		VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
 		user.addToVisitedLocations(visitedLocation);
-		rewardsService.calculateRewards(user);
+		// implementer dans le controleur de reward calculateRewards(user);
 		return visitedLocation;
 	}
 
@@ -99,17 +98,7 @@ public class TourGuideService {
 		return providers;
 	}
 
-// gps
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
-		}
-		
-		return nearbyAttractions;
-	}
+
 	
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
@@ -126,7 +115,7 @@ public class TourGuideService {
 	 **********************************************************************************/
 	private static final String tripPricerApiKey = "test-server-api-key";
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
-	private final Map<String, User> internalUserMap = new HashMap<>();
+
 	private void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
@@ -162,5 +151,6 @@ public class TourGuideService {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 	    return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
+
 	
 }

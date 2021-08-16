@@ -1,6 +1,6 @@
 package tourGuide.model;
 
-import gpsUtil.location.Attraction;
+
 
 // ms-reward // ms-user
 public class UserReward {

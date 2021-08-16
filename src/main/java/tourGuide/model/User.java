@@ -1,6 +1,5 @@
 package tourGuide.model;
 
-import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
 
 import java.util.ArrayList;

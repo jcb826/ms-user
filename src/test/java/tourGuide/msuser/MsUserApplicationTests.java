@@ -1,3 +1,4 @@
+/*
 package tourGuide.msuser;
 
 import org.junit.jupiter.api.Test;
@@ -86,3 +87,4 @@ class MsUserApplicationTests {
 
 
 }
+*/

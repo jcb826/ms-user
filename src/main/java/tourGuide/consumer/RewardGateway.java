@@ -1,25 +1,22 @@
 package tourGuide.consumer;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import tourGuide.model.User;
 import tourGuide.model.VisitedLocation;
 
-import java.util.UUID;
-
 @Component
-public class GpsGateway {
-
+public class RewardGateway {
     private final RestTemplate restTemplate;
 
-
-    public GpsGateway(RestTemplate restTemplate) {
+    public RewardGateway(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity <VisitedLocation> getUserLocation (UUID id){
+
+    public ResponseEntity<User> calculateRewards (User user){
         // appel du micro service
-        return restTemplate.getForEntity("localhost:8090/gps/{uuid}/"+id.toString(),VisitedLocation.class);
+        return restTemplate.getForEntity("localhost:8090/reward/",User.class);
     }
 }
