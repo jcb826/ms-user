@@ -17,6 +17,6 @@ public class RewardGateway {
 
     public ResponseEntity<User> calculateRewards (User user){
         // appel du micro service
-        return restTemplate.getForEntity("localhost:8090/reward/",User.class);
+        return restTemplate.getForEntity("localhost:8092/reward/",User.class);
     }
 }

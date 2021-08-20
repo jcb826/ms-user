@@ -17,5 +17,7 @@ public class TourGuideModule {
 	public RestTemplate getRestemplate() {
 		return new RestTemplate();
 	}
+
+
 	
 }

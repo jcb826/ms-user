@@ -14,6 +14,7 @@ public class GpsGateway {
     private final RestTemplate restTemplate;
 
 
+
     public GpsGateway(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
