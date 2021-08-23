@@ -20,7 +20,6 @@ public class GpsGateway {
     }
 
     public ResponseEntity <VisitedLocation> getUserLocation (UUID id){
-        // appel du micro service
-        return restTemplate.getForEntity("localhost:8090/gps/{uuid}/"+id.toString(),VisitedLocation.class);
+        return restTemplate.getForEntity("http://localhost:8090/gps/location/{uuid}/",VisitedLocation.class,id.toString());
     }
 }

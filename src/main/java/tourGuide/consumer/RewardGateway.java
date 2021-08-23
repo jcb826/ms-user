@@ -1,5 +1,6 @@
 package tourGuide.consumer;
 
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +18,7 @@ public class RewardGateway {
 
     public ResponseEntity<User> calculateRewards (User user){
         // appel du micro service
-        return restTemplate.getForEntity("localhost:8092/reward/",User.class);
+        HttpEntity<User> httpEntity= new HttpEntity<>(user);
+        return restTemplate.postForEntity("http://localhost:8092/reward/",httpEntity,User.class);
     }
 }
