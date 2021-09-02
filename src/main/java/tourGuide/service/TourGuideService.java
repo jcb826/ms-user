@@ -19,6 +19,8 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -74,7 +76,7 @@ public class TourGuideService {
 
 
     // reward
-
+/*
     public VisitedLocation trackUserLocation(User user) {
 
         VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
@@ -85,6 +87,23 @@ public class TourGuideService {
 
         return visitedLocation;
     }
+
+ */
+
+    public VisitedLocation trackUserLocation(User user) {
+        AtomicReference<VisitedLocation> visitedLocation = new AtomicReference<>(new VisitedLocation());
+        CompletableFuture.supplyAsync(()->gpsGateway.getUserLocation(user.getUserId()).getBody())
+                .thenAccept(visitedLocation2 -> visitedLocation.set(visitedLocation2));
+        AtomicReference<User> userUpdated = new AtomicReference<>(new User());
+        CompletableFuture.supplyAsync(()->rewardGateway.calculateRewards(user).getBody())
+                .thenAccept(user2 -> userUpdated.set(user2));
+        user.addToVisitedLocations(visitedLocation.get());
+        updateUser(user.getUserName(), userUpdated.get());
+        return visitedLocation.get();
+    }
+
+
+
 
     public List<UserReward> getUserRewards(String username) {
 

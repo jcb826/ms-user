@@ -82,7 +82,7 @@ class MsUserApplicationTests {
         Locale.setDefault(new Locale("en", "US"));
 
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
-        InternalTestHelper.setInternalUserNumber(100);
+        InternalTestHelper.setInternalUserNumber(1000);
         TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
 
         List<User> allUsers = tourGuideService.getAllUsers();
@@ -98,7 +98,6 @@ class MsUserApplicationTests {
         System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
         Assertions.assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
     }
-
 
 }
 
