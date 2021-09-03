@@ -98,6 +98,7 @@ public class TourGuideService {
         CompletableFuture.supplyAsync(()->rewardGateway.calculateRewards(user).getBody())
                 .thenAccept(user2 -> userUpdated.set(user2));
         user.addToVisitedLocations(visitedLocation.get());
+      //  System.out.println(userUpdated.get());
         updateUser(user.getUserName(), userUpdated.get());
         return visitedLocation.get();
     }
