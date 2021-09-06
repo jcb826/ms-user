@@ -76,7 +76,7 @@ public class TourGuideService {
 
 
     // reward
-/*
+
     public VisitedLocation trackUserLocation(User user) {
 
         VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
@@ -88,8 +88,18 @@ public class TourGuideService {
         return visitedLocation;
     }
 
- */
+    public boolean multiThreading(List<User> users) {
+        int i=0;
+        for (User user : users) {
+            trackUserLocation(user);
+            System.out.println(i);
+            i++;
+        }
+        return true;
+    }
 
+
+/*
     public VisitedLocation trackUserLocation(User user) {
         AtomicReference<VisitedLocation> visitedLocation = new AtomicReference<>(new VisitedLocation());
         CompletableFuture.supplyAsync(()->gpsGateway.getUserLocation(user.getUserId()).getBody())
@@ -103,7 +113,7 @@ public class TourGuideService {
         return visitedLocation.get();
     }
 
-
+ */
 
 
     public List<UserReward> getUserRewards(String username) {
