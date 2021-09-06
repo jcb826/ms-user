@@ -78,22 +78,26 @@ class MsUserApplicationTests {
         Assertions.assertEquals(user2, retrivedUser2);
     }
 
-/*
+
         @Test
         public void highVolumeTrackLocation() {
             Locale.setDefault(new Locale("en", "US"));
 
             // Users should be incremented up to 100,000, and test finishes within 15 minutes
-            InternalTestHelper.setInternalUserNumber(100);
+            InternalTestHelper.setInternalUserNumber(10000);
             TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
 
             List<User> allUsers = tourGuideService.getAllUsers();
 
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
+            /*
             for (User user : allUsers) {
                 tourGuideService.trackUserLocation(user);
             }
+
+             */
+            allUsers.parallelStream().forEach(u-> tourGuideService.trackUserLocation(u));
             stopWatch.stop();
             tourGuideService.tracker.stopTracking();
 
@@ -102,9 +106,9 @@ class MsUserApplicationTests {
         }
 
 
- */
 
 
+/*
     @Test
     public void highVolumeTrackLocation() {
         Locale.setDefault(new Locale("en", "US"));
@@ -124,7 +128,6 @@ class MsUserApplicationTests {
 
         CompletableFuture.supplyAsync(()->tourGuideService.multiThreading(list1))
                 .thenAccept(visitedLocation -> System.out.println("Thread 1 done"));
-
         CompletableFuture.supplyAsync(()->tourGuideService.multiThreading(list2))
                 .thenAccept(visitedLocation -> System.out.println("Thread 2 done"));
         CompletableFuture.supplyAsync(()->tourGuideService.multiThreading(list3))
@@ -144,6 +147,8 @@ class MsUserApplicationTests {
         System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
         Assertions.assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
     }
+
+ */
 
 
 

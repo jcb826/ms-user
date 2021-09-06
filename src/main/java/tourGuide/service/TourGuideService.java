@@ -84,8 +84,8 @@ public class TourGuideService {
         // implementer dans le controleur de reward calculateRewards(user);
         User userUpdated = rewardGateway.calculateRewards(user).getBody();
         updateUser(user.getUserName(), userUpdated);
-
         return visitedLocation;
+
     }
 
     public boolean multiThreading(List<User> users) {
