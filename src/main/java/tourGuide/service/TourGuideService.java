@@ -89,11 +89,11 @@ public class TourGuideService {
     }
 
     public boolean multiThreading(List<User> users) {
-        int i=0;
+       // int i=0;
         for (User user : users) {
             trackUserLocation(user);
-            System.out.println(i);
-            i++;
+        //    System.out.println(i);
+          //  i++;
         }
         return true;
     }
