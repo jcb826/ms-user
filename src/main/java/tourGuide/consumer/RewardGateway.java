@@ -16,9 +16,12 @@ public class RewardGateway {
     }
 
 
-    public ResponseEntity<User> calculateRewards (User user){
+    public ResponseEntity<User> calculateRewards (User user, VisitedLocation visitedLocation){
         // appel du micro service
-        HttpEntity<User> httpEntity= new HttpEntity<>(user);
+        CalculateRewardsDTO dto = new CalculateRewardsDTO();
+        dto.setUser(user);
+        dto.setVisitedLocation(visitedLocation);
+        HttpEntity<CalculateRewardsDTO> httpEntity= new HttpEntity<>(dto);
         return restTemplate.postForEntity("http://localhost:8092/reward/",httpEntity,User.class);
     }
 }

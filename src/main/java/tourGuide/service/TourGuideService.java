@@ -82,8 +82,15 @@ public class TourGuideService {
         VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
         user.addToVisitedLocations(visitedLocation);
         // implementer dans le controleur de reward calculateRewards(user);
-        User userUpdated = rewardGateway.calculateRewards(user).getBody();
-        updateUser(user.getUserName(), userUpdated);
+       /* CompletableFuture.runAsync(()->{
+            System.out.println("current thread is "+Thread.currentThread().getName());
+
+            User userUpdated = rewardGateway.calculateRewards(user,visitedLocation).getBody();
+            updateUser(user.getUserName(), userUpdated);
+                });
+
+        */
+
         return visitedLocation;
 
     }
