@@ -45,7 +45,7 @@ public class UserController {
     public List<User> getUsers() {
         TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
         List<User> users = tourGuideService.getAllUsers();
-        tourGuideService.tracker.stopTracking();
+       // tourGuideService.tracker.stopTracking();
         return users;
     }
 

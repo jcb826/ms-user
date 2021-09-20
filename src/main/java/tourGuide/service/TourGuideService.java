@@ -34,7 +34,7 @@ public class TourGuideService {
      *
      **********************************************************************************/
     private static final String tripPricerApiKey = "test-server-api-key";
-    public final Tracker tracker;
+   // public final Tracker tracker;
     //private final GpsUtil gpsUtil;
     //private final RewardsService rewardsService;
     private final TripPricer tripPricer = new TripPricer();
@@ -55,8 +55,8 @@ public class TourGuideService {
             initializeInternalUsers();
             logger.debug("Finished initializing users");
         }
-        tracker = new Tracker(this);
-        addShutDownHook();
+     //   tracker = new Tracker(this);
+      //  addShutDownHook();
     }
 
     public VisitedLocation getUserLocation(User user) {
@@ -78,20 +78,22 @@ public class TourGuideService {
     // reward
 
     public VisitedLocation trackUserLocation(User user) {
+        CompletableFuture.runAsync(()->{
+            VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
+            user.addToVisitedLocations(visitedLocation);
+        });
 
-        VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
-        user.addToVisitedLocations(visitedLocation);
         // implementer dans le controleur de reward calculateRewards(user);
        /* CompletableFuture.runAsync(()->{
             System.out.println("current thread is "+Thread.currentThread().getName());
-
-            User userUpdated = rewardGateway.calculateRewards(user,visitedLocation).getBody();
+ User userUpdated = rewardGateway.calculateRewards(user,visitedLocation).getBody();
             updateUser(user.getUserName(), userUpdated);
+
                 });
 
         */
 
-        return visitedLocation;
+       return null;
 
     }
 
@@ -148,7 +150,7 @@ public class TourGuideService {
         user.setTripDeals(providers);
         return providers;
     }
-
+/*
     private void addShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -156,6 +158,8 @@ public class TourGuideService {
             }
         });
     }
+
+ */
     // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
 
     private void initializeInternalUsers() {

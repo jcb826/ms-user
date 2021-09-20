@@ -48,7 +48,7 @@ class MsUserApplicationTests {
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
-        tourGuideService.tracker.stopTracking();
+      //  tourGuideService.tracker.stopTracking();
         Assertions.assertTrue(visitedLocation.userId.equals(user.getUserId()));
 
     }
@@ -72,7 +72,7 @@ class MsUserApplicationTests {
         User retrivedUser = tourGuideService.getUser(user.getUserName());
         User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
 
-        tourGuideService.tracker.stopTracking();
+      //  tourGuideService.tracker.stopTracking();
 
         Assertions.assertEquals(user, retrivedUser);
         Assertions.assertEquals(user2, retrivedUser2);
@@ -84,7 +84,7 @@ class MsUserApplicationTests {
             Locale.setDefault(new Locale("en", "US"));
 
             // Users should be incremented up to 100,000, and test finishes within 15 minutes
-            InternalTestHelper.setInternalUserNumber(1000);
+            InternalTestHelper.setInternalUserNumber(10000);
             TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
 
             List<User> allUsers = tourGuideService.getAllUsers();
@@ -97,9 +97,9 @@ class MsUserApplicationTests {
             }
 
              */
-            allUsers.parallelStream().forEach(u-> tourGuideService.trackUserLocation(u));
+         allUsers.parallelStream().forEach(u-> tourGuideService.trackUserLocation(u));
             stopWatch.stop();
-            tourGuideService.tracker.stopTracking();
+         //   tourGuideService.tracker.stopTracking();
 
             System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
             Assertions.assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
