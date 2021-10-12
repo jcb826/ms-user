@@ -2,16 +2,14 @@ package tourGuide.controller;
 
 import com.jsoniter.output.JsonStream;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tourGuide.consumer.GpsGateway;
 import tourGuide.consumer.RewardGateway;
 import tourGuide.model.User;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.TourGuideService;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -21,6 +19,8 @@ public class UserController {
 
     @Autowired
     TourGuideService tourGuideService;
+
+
 
     @Autowired
     GpsGateway gpsGateway;
@@ -47,6 +47,11 @@ public class UserController {
         List<User> users = tourGuideService.getAllUsers();
        // tourGuideService.tracker.stopTracking();
         return users;
+    }
+    @PutMapping("/{userName}")
+    public void updateUser(@PathVariable() String userName,@RequestBody User user) {
+        System.out.println(userName);
+         tourGuideService.updateUser(userName,user);
     }
 
 
