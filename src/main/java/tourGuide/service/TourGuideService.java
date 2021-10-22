@@ -20,6 +20,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -43,7 +46,7 @@ public class TourGuideService {
     private final RewardGateway rewardGateway;
     boolean testMode = true;
     private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-
+    private ExecutorService executorService = Executors.newFixedThreadPool(500);
     public TourGuideService(/*GpsUtil gpsUtil, RewardsService rewardsService*/GpsGateway gpsGateway, RewardGateway rewardGateway) {
         this.gpsGateway = gpsGateway;
         this.rewardGateway = rewardGateway;
@@ -81,7 +84,7 @@ public class TourGuideService {
         CompletableFuture.runAsync(()->{
             VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
             user.addToVisitedLocations(visitedLocation);
-        });
+        },executorService);
 
         // implementer dans le controleur de reward calculateRewards(user);
        /* CompletableFuture.runAsync(()->{
@@ -197,6 +200,19 @@ public class TourGuideService {
         LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
         return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
     }
+public void shutdown() throws InterruptedException {
 
+        executorService.shutdown();
+        try {
+            if(!executorService.awaitTermination(15, TimeUnit.MINUTES)){
+
+                executorService.shutdownNow();
+            }
+        }catch (InterruptedException e){
+            e.printStackTrace();
+            executorService.shutdownNow();
+        }
+
+}
 
 }

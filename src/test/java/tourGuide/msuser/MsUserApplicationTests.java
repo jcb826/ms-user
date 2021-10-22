@@ -42,13 +42,13 @@ class MsUserApplicationTests {
 
 
  */
-        Locale.setDefault(new Locale("en", "US"));
-        InternalTestHelper.setInternalUserNumber(0);
+
+
         TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
-      //  tourGuideService.tracker.stopTracking();
+        //  tourGuideService.tracker.stopTracking();
         Assertions.assertTrue(visitedLocation.userId.equals(user.getUserId()));
 
     }
@@ -72,38 +72,40 @@ class MsUserApplicationTests {
         User retrivedUser = tourGuideService.getUser(user.getUserName());
         User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
 
-      //  tourGuideService.tracker.stopTracking();
+        //  tourGuideService.tracker.stopTracking();
 
         Assertions.assertEquals(user, retrivedUser);
         Assertions.assertEquals(user2, retrivedUser2);
     }
 
 
-        @Test
-        public void highVolumeTrackLocation() {
-            Locale.setDefault(new Locale("en", "US"));
+    @Test
+    public void highVolumeTrackLocation() throws InterruptedException {
+        Locale.setDefault(new Locale("en", "US"));
 
-            // Users should be incremented up to 100,000, and test finishes within 15 minutes
-            InternalTestHelper.setInternalUserNumber(1000);
-            TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
+        // Users should be incremented up to 100,000, and test finishes within 15 minutes
+        InternalTestHelper.setInternalUserNumber(100000);
+        TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
 
-            List<User> allUsers = tourGuideService.getAllUsers();
+        List<User> allUsers = tourGuideService.getAllUsers();
 
-            StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
             /*
             for (User user : allUsers) {
                 tourGuideService.trackUserLocation(user);
             }
 
              */
-         allUsers.parallelStream().forEach(u-> tourGuideService.trackUserLocation(u));
-            stopWatch.stop();
-         //   tourGuideService.tracker.stopTracking();
+        allUsers.parallelStream().forEach(u -> tourGuideService.trackUserLocation(u));
 
-            System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
-            Assertions.assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
-        }
+        tourGuideService.shutdown();
+        stopWatch.stop();
+        //   tourGuideService.tracker.stopTracking();
+
+        System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
+        Assertions.assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+    }
 
 
 
@@ -149,8 +151,6 @@ class MsUserApplicationTests {
     }
 
  */
-
-
 
 
 }
