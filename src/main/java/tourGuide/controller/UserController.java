@@ -9,7 +9,6 @@ import tourGuide.model.User;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.TourGuideService;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -19,7 +18,6 @@ public class UserController {
 
     @Autowired
     TourGuideService tourGuideService;
-
 
 
     @Autowired
@@ -32,8 +30,6 @@ public class UserController {
 
         VisitedLocation visitedLocation = tourGuideService.getUserLocation(tourGuideService.getUser(userName));
         return JsonStream.serialize(visitedLocation.location);
-
-
     }
 
     @RequestMapping("/getRewards")
@@ -45,13 +41,12 @@ public class UserController {
     public List<User> getUsers() {
         TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
         List<User> users = tourGuideService.getAllUsers();
-       // tourGuideService.tracker.stopTracking();
         return users;
     }
+
     @PutMapping("/{userName}")
-    public void updateUser(@PathVariable() String userName,@RequestBody User user) {
-        System.out.println(userName);
-         tourGuideService.updateUser(userName,user);
+    public void updateUser(@PathVariable() String userName, @RequestBody User user) {
+        tourGuideService.updateUser(userName, user);
     }
 
 

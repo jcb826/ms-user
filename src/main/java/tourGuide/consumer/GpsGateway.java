@@ -14,12 +14,11 @@ public class GpsGateway {
     private final RestTemplate restTemplate;
 
 
-
     public GpsGateway(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity <VisitedLocation> getUserLocation (UUID id){
-        return restTemplate.getForEntity("http://localhost:8090/gps/location/{uuid}/",VisitedLocation.class,id.toString());
+    public ResponseEntity<VisitedLocation> getUserLocation(UUID id) {
+        return restTemplate.getForEntity("http://localhost:8090/gps/location/{uuid}/", VisitedLocation.class, id.toString());
     }
 }

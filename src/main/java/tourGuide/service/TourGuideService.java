@@ -11,11 +11,8 @@ import tourGuide.model.Location;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
-import tourGuide.tracker.Tracker;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
-
-import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -27,8 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-//dans ms-user
-// dans pour chaque methode de cette classe creer son endPoint
+
 @Service
 public class TourGuideService {
     /**********************************************************************************
@@ -37,9 +33,6 @@ public class TourGuideService {
      *
      **********************************************************************************/
     private static final String tripPricerApiKey = "test-server-api-key";
-   // public final Tracker tracker;
-    //private final GpsUtil gpsUtil;
-    //private final RewardsService rewardsService;
     private final TripPricer tripPricer = new TripPricer();
     private final Map<String, User> internalUserMap = new HashMap<>();
     private final GpsGateway gpsGateway;
@@ -47,7 +40,7 @@ public class TourGuideService {
     boolean testMode = true;
     private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
     private ExecutorService executorService = Executors.newFixedThreadPool(500);
-    public TourGuideService(/*GpsUtil gpsUtil, RewardsService rewardsService*/GpsGateway gpsGateway, RewardGateway rewardGateway) {
+    public TourGuideService(GpsGateway gpsGateway, RewardGateway rewardGateway) {
         this.gpsGateway = gpsGateway;
         this.rewardGateway = rewardGateway;
 
@@ -58,8 +51,7 @@ public class TourGuideService {
             initializeInternalUsers();
             logger.debug("Finished initializing users");
         }
-     //   tracker = new Tracker(this);
-      //  addShutDownHook();
+
     }
 
     public VisitedLocation getUserLocation(User user) {
@@ -78,54 +70,32 @@ public class TourGuideService {
     }
 
 
-    // reward
+
 
     public VisitedLocation trackUserLocation(User user) {
         CompletableFuture.runAsync(()->{
             VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
             user.addToVisitedLocations(visitedLocation);
+
         },executorService);
 
-        // implementer dans le controleur de reward calculateRewards(user);
-       /* CompletableFuture.runAsync(()->{
-            System.out.println("current thread is "+Thread.currentThread().getName());
- User userUpdated = rewardGateway.calculateRewards(user,visitedLocation).getBody();
-            updateUser(user.getUserName(), userUpdated);
 
-                });
-
-        */
 
        return null;
 
     }
 
     public boolean multiThreading(List<User> users) {
-       // int i=0;
+
         for (User user : users) {
             trackUserLocation(user);
-        //    System.out.println(i);
-          //  i++;
+
         }
         return true;
     }
 
 
-/*
-    public VisitedLocation trackUserLocation(User user) {
-        AtomicReference<VisitedLocation> visitedLocation = new AtomicReference<>(new VisitedLocation());
-        CompletableFuture.supplyAsync(()->gpsGateway.getUserLocation(user.getUserId()).getBody())
-                .thenAccept(visitedLocation2 -> visitedLocation.set(visitedLocation2));
-        AtomicReference<User> userUpdated = new AtomicReference<>(new User());
-        CompletableFuture.supplyAsync(()->rewardGateway.calculateRewards(user).getBody())
-                .thenAccept(user2 -> userUpdated.set(user2));
-        user.addToVisitedLocations(visitedLocation.get());
-      //  System.out.println(userUpdated.get());
-        updateUser(user.getUserName(), userUpdated.get());
-        return visitedLocation.get();
-    }
 
- */
 
 
     public List<UserReward> getUserRewards(String username) {
@@ -133,19 +103,19 @@ public class TourGuideService {
         return this.getUser(username).getUserRewards();
     }
 
-    // user
+
     public List<User> getAllUsers() {
         return internalUserMap.values().stream().collect(Collectors.toList());
     }
 
-    // user
+
     public void addUser(User user) {
         if (!internalUserMap.containsKey(user.getUserName())) {
             internalUserMap.put(user.getUserName(), user);
         }
     }
 
-    // user
+
     public List<Provider> getTripDeals(User user) {
         int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
         List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
@@ -153,17 +123,7 @@ public class TourGuideService {
         user.setTripDeals(providers);
         return providers;
     }
-/*
-    private void addShutDownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                tracker.stopTracking();
-            }
-        });
-    }
 
- */
-    // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
 
     private void initializeInternalUsers() {
         IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
