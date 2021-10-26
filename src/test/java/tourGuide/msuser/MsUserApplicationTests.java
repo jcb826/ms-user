@@ -10,10 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import tourGuide.consumer.GpsGateway;
 import tourGuide.consumer.RewardGateway;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.model.Attraction;
 import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.TourGuideService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -69,6 +72,8 @@ class MsUserApplicationTests {
     }
 
 
+
+
     @Test
     public void highVolumeTrackLocation() throws InterruptedException {
         Locale.setDefault(new Locale("en", "US"));
@@ -89,6 +94,8 @@ class MsUserApplicationTests {
         System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
         Assertions.assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
     }
+
+
 
 
 }

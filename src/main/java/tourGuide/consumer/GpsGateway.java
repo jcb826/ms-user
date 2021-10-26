@@ -4,6 +4,7 @@ package tourGuide.consumer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import tourGuide.model.Attraction;
 import tourGuide.model.VisitedLocation;
 
 import java.util.UUID;
@@ -20,5 +21,10 @@ public class GpsGateway {
 
     public ResponseEntity<VisitedLocation> getUserLocation(UUID id) {
         return restTemplate.getForEntity("http://localhost:8090/gps/location/{uuid}/", VisitedLocation.class, id.toString());
+    }
+
+    public ResponseEntity<Attraction[]> getAttractions() {
+
+        return restTemplate.getForEntity("http://localhost:8090/gps/attractions", Attraction[].class);
     }
 }

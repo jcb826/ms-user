@@ -23,4 +23,7 @@ public class RewardGateway {
         HttpEntity<CalculateRewardsDTO> httpEntity = new HttpEntity<>(dto);
         return restTemplate.postForEntity("http://localhost:8092/reward/", httpEntity, User.class);
     }
+
+
+
 }
