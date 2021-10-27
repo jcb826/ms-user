@@ -16,19 +16,18 @@ import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.TourGuideService;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
 @SpringBootTest
-class MsUserApplicationTests {
+class MsUserApplicationIT {
     @Autowired
     GpsGateway gpsGateway;
     @Autowired
     RewardGateway rewardGateway;
+    @Autowired
+    TourGuideService tourGuideService;
 
 
     @Test
@@ -48,31 +47,6 @@ class MsUserApplicationTests {
         Assertions.assertTrue(visitedLocations.get(0).userId.equals(user.getUserId()));
 
     }
-
-
-    @Test
-    public void addUser() {
-
-        InternalTestHelper.setInternalUserNumber(1);
-        TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
-
-        User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-        User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
-
-        tourGuideService.addUser(user);
-        tourGuideService.addUser(user2);
-
-        User retrivedUser = tourGuideService.getUser(user.getUserName());
-        User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
-
-        //  tourGuideService.tracker.stopTracking();
-
-        Assertions.assertEquals(user, retrivedUser);
-        Assertions.assertEquals(user2, retrivedUser2);
-    }
-
-
-
 
     @Test
     public void highVolumeTrackLocation() throws InterruptedException {
@@ -97,6 +71,42 @@ class MsUserApplicationTests {
 
 
 
+
+    @Test
+    public void userGetRewards() {
+        Locale.setDefault(new Locale("en", "US"));
+
+
+        InternalTestHelper.setInternalUserNumber(0);
+
+
+        User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+        Attraction attraction = gpsGateway.getAttractions().getBody()[0];
+        user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
+        tourGuideService.trackUserLocation(user);
+        List<UserReward> userRewards = user.getUserRewards();
+
+        Assertions.assertTrue(userRewards.size() == 1);
+    }
+
+    @Test
+    public void getNearbyAttractions() throws InterruptedException {
+        Locale.setDefault(new Locale("en", "US"));
+
+        InternalTestHelper.setInternalUserNumber(1);
+        TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
+
+        User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+        VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+        tourGuideService.shutdown();
+        List<VisitedLocation> visitedLocations = user.getVisitedLocations();
+        VisitedLocation  visitedLocation1 = visitedLocations.get(0);
+        List<Attraction> attractions = Arrays.asList(gpsGateway.getAttractions(visitedLocation1.getUserId()).getBody());
+
+        //tourGuideService.tracker.stopTracking();
+
+        Assertions.assertEquals(5, attractions.size());
+    }
 
 }
 
