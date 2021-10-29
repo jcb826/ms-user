@@ -77,7 +77,7 @@ class MsUserApplicationIT {
         Locale.setDefault(new Locale("en", "US"));
 
 
-        InternalTestHelper.setInternalUserNumber(1);
+        InternalTestHelper.setInternalUserNumber(0);
 
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
@@ -90,11 +90,13 @@ class MsUserApplicationIT {
         Assertions.assertTrue(userRewards.size() == 1);
     }
 
+
+
     @Test
     public void getNearbyAttractions() throws InterruptedException {
         Locale.setDefault(new Locale("en", "US"));
 
-        InternalTestHelper.setInternalUserNumber(1);
+        InternalTestHelper.setInternalUserNumber(0);
         TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
@@ -102,12 +104,32 @@ class MsUserApplicationIT {
         tourGuideService.shutdown();
         List<VisitedLocation> visitedLocations = user.getVisitedLocations();
         VisitedLocation  visitedLocation1 = visitedLocations.get(0);
-        List<Attraction> attractions = Arrays.asList(gpsGateway.getAttractions(visitedLocation1.getUserId()).getBody());
+
+        Attraction[] attractions = gpsGateway.getNearByAttractions(user.getUserId()).getBody();
 
         //tourGuideService.tracker.stopTracking();
 
-        Assertions.assertEquals(5, attractions.size());
+        Assertions.assertEquals(5, attractions.length);
     }
+/*
+    public void getNearbyAttractions() {
+        Locale.setDefault(new Locale("en", "US"));
+        GpsUtil gpsUtil = new GpsUtil();
+        RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+        InternalTestHelper.setInternalUserNumber(0);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+
+        User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+        VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+
+        List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+
+        tourGuideService.tracker.stopTracking();
+
+        assertEquals(5, attractions.size());
+    }
+
+ */
 
 }
 
