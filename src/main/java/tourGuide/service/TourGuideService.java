@@ -76,7 +76,8 @@ public class TourGuideService {
         CompletableFuture.runAsync(()->{
             VisitedLocation visitedLocation = gpsGateway.getUserLocation(user.getUserId()).getBody();
             user.addToVisitedLocations(visitedLocation);
-
+            rewardGateway.calculateRewards(user,visitedLocation);
+            int i=0;
         },executorService);
 
 

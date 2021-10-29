@@ -73,17 +73,18 @@ class MsUserApplicationIT {
 
 
     @Test
-    public void userGetRewards() {
+    public void userGetRewards() throws InterruptedException {
         Locale.setDefault(new Locale("en", "US"));
 
 
-        InternalTestHelper.setInternalUserNumber(0);
+        InternalTestHelper.setInternalUserNumber(1);
 
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         Attraction attraction = gpsGateway.getAttractions().getBody()[0];
         user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
         tourGuideService.trackUserLocation(user);
+        tourGuideService.shutdown();
         List<UserReward> userRewards = user.getUserRewards();
 
         Assertions.assertTrue(userRewards.size() == 1);
