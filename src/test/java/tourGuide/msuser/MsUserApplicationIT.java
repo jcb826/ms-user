@@ -53,7 +53,7 @@ class MsUserApplicationIT {
         Locale.setDefault(new Locale("en", "US"));
 
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
-        InternalTestHelper.setInternalUserNumber(100000);
+        InternalTestHelper.setInternalUserNumber(100);
         TourGuideService tourGuideService = new TourGuideService(gpsGateway, rewardGateway);
 
         List<User> allUsers = tourGuideService.getAllUsers();

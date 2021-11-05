@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import tourGuide.consumer.GpsGateway;
 import tourGuide.consumer.RewardGateway;
 import tourGuide.model.User;
+import tourGuide.model.UserPreferences;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.TourGuideService;
 
@@ -44,8 +45,10 @@ public class UserController {
         return users;
     }
 
-    @PutMapping("/{userName}")
-    public void updateUser(@PathVariable() String userName, @RequestBody User user) {
+    @PutMapping("/preferences/{userName}")
+    public void updateUser(@PathVariable() String userName, @RequestBody UserPreferences userPreferences) {
+        User user = tourGuideService.getUser(userName);
+        user.setUserPreferences(userPreferences);
         tourGuideService.updateUser(userName, user);
     }
 
